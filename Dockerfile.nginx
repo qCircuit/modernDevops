@@ -1,0 +1,17 @@
+# use base image
+FROM nginx:alpine
+
+# forbid
+RUN echo "http {" >> /etc/nginx/nginx.conf \
+    && echo "    location / {" >> /etc/nginx/nginx.conf \
+    && echo "        limit_except POST {" >> /etc/nginx/nginx.conf \
+    && echo "            deny all;" >> /etc/nginx/nginx.conf \
+    && echo "        }" >> /etc/nginx/nginx.conf \
+    && echo "    }" >> /etc/nginx/nginx.conf \
+    && echo "}" >> /etc/nginx/nginx.conf
+
+# expose port
+EXPOSE 80
+
+# launch nginx
+CMD ["nginx", "-g", "daemon off;"]

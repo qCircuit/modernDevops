@@ -1,0 +1,14 @@
+# use base image
+FROM postgres:latest
+
+# env variables PostgreSQL
+ENV POSTGRES_DB=mydatabase
+ENV POSTGRES_USER=test
+ENV POSTGRES_PASSWORD=testpassword
+
+# copy init
+COPY init.sql /docker-entrypoint-initdb.d/
+
+# chmod the rights
+RUN chown postgres:postgres /docker-entrypoint-initdb.d/init.sql
+RUN chmod 755 /docker-entrypoint-initdb.d/init.sql

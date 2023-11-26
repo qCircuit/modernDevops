@@ -1,0 +1,4 @@
+CREATE USER test WITH PASSWORD 'testpassword';
+
+CREATE DATABASE mydatabase;
+GRANT ALL PRIVILEGES ON DATABASE mydatabase TO test;

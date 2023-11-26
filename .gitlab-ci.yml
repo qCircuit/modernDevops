@@ -1,0 +1,27 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  DOCKER_IMAGE_NGINX: registry.gitlab.akhcheck.ru/task-templates/testing-python:nginx-customized
+  DOCKER_IMAGE_POSTGRES: registry.gitlab.akhcheck.ru/task-templates/testing-python:postgres-customized
+
+build_images:
+  stage: build
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+    - docker build -t $DOCKER_IMAGE_NGINX -f Dockerfile.nginx .
+    - docker build -t $DOCKER_IMAGE_POSTGRES -f Dockerfile.postgres .
+    - docker push $DOCKER_IMAGE_NGINX
+    - docker push $DOCKER_IMAGE_POSTGRES
+
+deploy_compose:
+  stage: deploy
+  only:
+    - master
+  script:
+    - apt-get update -qy
+    - apt-get install -y sshpass
+    - sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no student60@XX.XXX.XXX.XXX 'mkdir -p ~/docker-deploy'
+    - scp -o StrictHostKeyChecking=no docker-compose-deploy.yaml student60@XX.XXX.XXX.XXX:~/docker-deploy/docker-compose.yaml
+    - sshpass -p $SSH_PASSWORD ssh -o StrictHostKeyChecking=no student60@XX.XXX.XXX.XXX 'cd ~/docker-deploy && docker-compose up -d'

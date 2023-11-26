@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  nginx:
+    image: registry.gitlab.akhcheck.ru/task-templates/testing-python:nginx-customized
+    ports:
+      - "350XX:80"
+
+  postgres:
+    image: registry.gitlab.akhcheck.ru/task-templates/testing-python:postgres-customized
+    ports:
+      - "450XX:5432"
